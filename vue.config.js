@@ -1,3 +1,4 @@
 module.exports = {
-	publicPath: process.env.NODE_ENV === 'production' ? '/threejs' : '/'
+	publicPath: process.env.NODE_ENV === 'production' ? '/threejs' : '/',
+	outputDir: 'docs'
 }
