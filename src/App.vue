@@ -1,19 +1,21 @@
 <template>
   <div id="app">
-    <ThreeCanvas/>
+    <router-view/>
+    <footer>
+      <router-link to="/">Go to home</router-link>
+    </footer>
   </div>
 </template>
 
 <script>
-import ThreeCanvas from './components/ThreeCanvas.vue'
 
 export default {
-  name: 'App',
-  components: {
-    ThreeCanvas
-  }
+  name: 'App'
 }
 </script>
 
 <style>
+footer {
+  margin-top: 10vh;
+}
 </style>
