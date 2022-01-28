@@ -9,44 +9,11 @@
     </p>
     <video id="originVideo"></video>
     <canvas id="filterCanvas"></canvas>
-    <div id="targetCanvas"></div>
+    <div id="targetText"></div>
   </div>
 </template>
 
 <script>
-/*
-import * as THREE from 'three';
-
-function drawCanvas(){
-  const sceneWidth = window.innerWidth * 0.8;
-  const sceneHeight = window.innerHeight * 0.8;
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera( 75, sceneWidth / sceneHeight, 0.1, 1000 );
-
-  const renderer = new THREE.WebGLRenderer();
-  renderer.setSize( sceneWidth, sceneHeight );
-  document.getElementById("targetCanvas").append( renderer.domElement );
-
-  const geometry = new THREE.BoxGeometry();
-  const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-  const cube = new THREE.Mesh( geometry, material );
-  scene.add( cube );
-
-  camera.position.z = 5;
-
-  function animate() {
-    requestAnimationFrame( animate );
-
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-
-    renderer.render( scene, camera );
-  }
-
-  animate();
-}
- */
-
 function toggleVideo(stream){
   const tracks = stream.getTracks();
   const videoTrack = tracks.filter(track => track.kind === 'video')[0];
@@ -96,18 +63,12 @@ function filterVideo(video){
     let pixels = ctx.getImageData(0, 0, sceneWidth, sceneHeight);
     pixels = filterPixels(pixels);
     ctx.putImageData(pixels, 0, 0);
+    drawCanvas(pixels, sceneWidth);
   })
 
-  /*
-  return setInterval(() => {
-    ctx.drawImage(video, 0, 0, sceneWidth, sceneHeight);
-    let pixels = ctx.getImageData(0, 0, sceneWidth, sceneHeight);
-    pixels = filterPixels(pixels);
-    ctx.putImageData(pixels, 0, 0);
-  }, 10000);
-  */
-
 }
+
+const themeColor = [[46, 41, 78], [84, 19, 136], [241, 233, 218], [255, 212, 0], [217, 3, 104]];
 
 function filterPixels(pixels){
   /**
@@ -117,8 +78,6 @@ function filterPixels(pixels){
    * #FFD400 yellow rgb(255, 212, 0)
    * #D90368 red rgb(217, 3, 104)
    */
-  const themeColor = [[46, 41, 78], [84, 19, 136], [241, 233, 218], [255, 212, 0], [217, 3, 104]];
-
   for (let i = 0; i < pixels.data.length; i += 4){
     const red = pixels.data[i];
     const green = pixels.data[i + 1];
@@ -140,19 +99,185 @@ function filterPixels(pixels){
   return pixels;
 }
 
+function drawCanvas(pixels, width){
+  let targetText = document.getElementById('targetText');
+  let classNum = 1;
+  let innerHTML = '';
+
+  for (let i = 0; i < pixels.data.length; i += 4){
+    if(i % (width * 4) === 0){
+      if(i > 0){
+        innerHTML += `</div>`;
+      }
+      innerHTML += `<div class="colorchip-wrap">`;
+    }
+    switch(pixels.data[i]){
+      case 84:
+        classNum = 2;
+        break;
+      case 241:
+        classNum = 3;
+        break;
+      case 255:
+        classNum = 4;
+        break;
+      case 217:
+        classNum = 5;
+        break;
+      default:
+        classNum = 1;
+    }
+    innerHTML += `<div class="colorchip theme-color-` + classNum + `"></div>`;
+  }
+  innerHTML += `</div>`;
+  targetText.innerHTML = innerHTML;
+}
 
 export default {
 
   mounted(){
-    //drawCanvas();
     getVideo();
   }
 }
 </script>
 
-<style scoped>
+<style>
+
+@keyframes colorChange1 {
+  0% {
+    background: #ffffff;
+  }
+  20% {
+    background: #541388;
+  }
+  40% {
+    background: #F1E9DA;
+  }
+  60% {
+    background: #D90368;
+  }
+  80% {
+    background: #FFD400;
+  }
+  100% {
+    background: #2E294E;
+  }
+}
+@keyframes colorChange2 {
+  0% {
+    background: #ffffff;
+  }
+  20% {
+    background: #F1E9DA;
+  }
+  40% {
+    background: #D90368;
+  }
+  60% {
+    background: #FFD400;
+  }
+  80% {
+    background: #2E294E;
+  }
+  100% {
+    background: #541388;
+  }
+}
+@keyframes colorChange3 {
+  0% {
+    background: #ffffff;
+  }
+  20% {
+    background: #D90368;
+  }
+  40% {
+    background: #FFD400;
+  }
+  60% {
+    background: #2E294E;
+  }
+  80% {
+    background: #541388;
+  }
+  100% {
+    background: #F1E9DA;
+  }
+}
+@keyframes colorChange4 {
+  0% {
+    background: #ffffff;
+  }
+  20% {
+    background: #FFD400;
+  }
+  40% {
+    background: #2E294E;
+  }
+  60% {
+    background: #541388;
+  }
+  80% {
+    background: #F1E9DA;
+  }
+  100% {
+    background: #D90368;
+  }
+}
+@keyframes colorChange5 {
+  0% {
+    background: #ffffff;
+  }
+  20% {
+    background: #2E294E;
+  }
+  40% {
+    background: #541388;
+  }
+  60% {
+    background: #F1E9DA;
+  }
+  80% {
+    background: #D90368;
+  }
+  100% {
+    background: #FFD400;
+  }
+}
+
 #filterCanvas {
   display: block;
   width: 60vw;
+}
+#targetText {
+  margin-top: 200px;
+}
+#targetText .colorchip-wrap {
+  display: block;
+  line-height: 0;
+  margin-bottom: -2px;
+}
+#targetText .colorchip {
+  display: inline-block;
+  width: 2px;
+  height: 2px;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+  background: #ffffff;
+}
+.theme-color-1 {
+  animation: colorChange1 5s 5s ease alternate;
+}
+.theme-color-2 {
+  animation: colorChange2 5s 5s ease alternate;
+}
+.theme-color-3 {
+  animation: colorChange3 5s 5s ease alternate;
+}
+.theme-color-4 {
+  animation: colorChange4 5s 5s ease alternate;
+}
+.theme-color-5 {
+  animation: colorChange5 5s 5s ease alternate;
 }
 </style>
