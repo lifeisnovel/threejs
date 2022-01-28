@@ -103,13 +103,15 @@ function drawCanvas(pixels, width){
   let targetText = document.getElementById('targetText');
   let classNum = 1;
   let innerHTML = '';
-
   for (let i = 0; i < pixels.data.length; i += 4){
     if(i % (width * 4) === 0){
       if(i > 0){
         innerHTML += `</div>`;
       }
       innerHTML += `<div class="colorchip-wrap">`;
+    }
+    if(parseInt(i / 2) % 4 > 0 || (parseInt(i / (width * 4)) % 2 > 0)){
+      continue;
     }
     switch(pixels.data[i]){
       case 84:
@@ -134,7 +136,6 @@ function drawCanvas(pixels, width){
 }
 
 export default {
-
   mounted(){
     getVideo();
   }
@@ -254,30 +255,30 @@ export default {
 #targetText .colorchip-wrap {
   display: block;
   line-height: 0;
-  margin-bottom: -2px;
+  margin-bottom: 0;
 }
 #targetText .colorchip {
   display: inline-block;
-  width: 2px;
-  height: 2px;
+  width: 4px;
+  height: 4px;
   margin: 0;
   padding: 0;
   line-height: 0;
   background: #ffffff;
 }
 .theme-color-1 {
-  animation: colorChange1 5s 5s ease alternate;
+  animation: colorChange1 5s 5s ease alternate infinite;
 }
 .theme-color-2 {
-  animation: colorChange2 5s 5s ease alternate;
+  animation: colorChange2 5s 5s ease alternate infinite;
 }
 .theme-color-3 {
-  animation: colorChange3 5s 5s ease alternate;
+  animation: colorChange3 5s 5s ease alternate infinite;
 }
 .theme-color-4 {
-  animation: colorChange4 5s 5s ease alternate;
+  animation: colorChange4 5s 5s ease alternate infinite;
 }
 .theme-color-5 {
-  animation: colorChange5 5s 5s ease alternate;
+  animation: colorChange5 5s 5s ease alternate infinite;
 }
 </style>
